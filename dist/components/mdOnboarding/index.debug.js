@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 467);
+/******/ 	return __webpack_require__(__webpack_require__.s = 455);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -200,41 +200,6 @@ module.exports = function(it, key){
 
 /***/ }),
 
-/***/ 105:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = install;
-
-var _mdTabs = __webpack_require__(358);
-
-var _mdTabs2 = _interopRequireDefault(_mdTabs);
-
-var _mdTab = __webpack_require__(357);
-
-var _mdTab2 = _interopRequireDefault(_mdTab);
-
-var _mdTabs3 = __webpack_require__(286);
-
-var _mdTabs4 = _interopRequireDefault(_mdTabs3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function install(Vue) {
-  Vue.component('md-tabs', _mdTabs2.default);
-  Vue.component('md-tab', _mdTab2.default);
-
-  Vue.material.styles.push(_mdTabs4.default);
-}
-module.exports = exports['default'];
-
-/***/ }),
-
 /***/ 11:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -350,34 +315,7 @@ module.exports = $export;
 
 /***/ }),
 
-/***/ 17:
-/***/ (function(module, exports) {
-
-module.exports = function(bitmap, value){
-  return {
-    enumerable  : !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable    : !(bitmap & 4),
-    value       : value
-  };
-};
-
-/***/ }),
-
-/***/ 18:
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys       = __webpack_require__(31)
-  , enumBugKeys = __webpack_require__(21);
-
-module.exports = Object.keys || function keys(O){
-  return $keys(O, enumBugKeys);
-};
-
-/***/ }),
-
-/***/ 189:
+/***/ 166:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -405,16 +343,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 
 exports.default = {
-  name: 'md-tab',
   props: {
     id: [String, Number],
     mdLabel: [String, Number],
     mdIcon: String,
     mdActive: Boolean,
     mdDisabled: Boolean,
-    mdOptions: {
-      default: undefined
-    },
     mdTooltip: String,
     mdTooltipDelay: {
       type: String,
@@ -428,7 +362,7 @@ exports.default = {
   data: function data() {
     return {
       mounted: false,
-      tabId: this.id || 'tab-' + (0, _uniqueId2.default)(),
+      boardId: this.id || 'board-' + (0, _uniqueId2.default)(),
       width: '0px',
       left: '0px'
     };
@@ -436,32 +370,25 @@ exports.default = {
 
   watch: {
     mdActive: function mdActive() {
-      this.updateTabData();
+      this.updateBoardData();
     },
     mdDisabled: function mdDisabled() {
-      this.updateTabData();
+      this.updateBoardData();
     },
     mdIcon: function mdIcon() {
-      this.updateTabData();
-    },
-
-    mdOptions: {
-      deep: true,
-      handler: function handler() {
-        this.updateTabData();
-      }
+      this.updateBoardData();
     },
     mdLabel: function mdLabel() {
-      this.updateTabData();
+      this.updateBoardData();
     },
     mdTooltip: function mdTooltip() {
-      this.updateTabData();
+      this.updateBoardData();
     },
     mdTooltipDelay: function mdTooltipDelay() {
-      this.updateTabData();
+      this.updateBoardData();
     },
     mdTooltipDirection: function mdTooltipDirection() {
-      this.updateTabData();
+      this.updateBoardData();
     }
   },
   computed: {
@@ -473,12 +400,11 @@ exports.default = {
     }
   },
   methods: {
-    getTabData: function getTabData() {
+    getBoardData: function getBoardData() {
       return {
-        id: this.tabId,
+        id: this.boardId,
         label: this.mdLabel,
         icon: this.mdIcon,
-        options: this.mdOptions,
         active: this.mdActive,
         disabled: this.mdDisabled,
         tooltip: this.mdTooltip,
@@ -487,46 +413,35 @@ exports.default = {
         ref: this
       };
     },
-    updateTabData: function updateTabData() {
-      this.parentTabs.updateTab(this.getTabData());
+    updateBoardData: function updateBoardData() {
+      this.parentBoards.updateBoard(this.getBoardData());
     }
   },
   mounted: function mounted() {
-    var tabData = this.getTabData();
+    var boardData = this.getBoardData();
 
-    this.parentTabs = (0, _getClosestVueParent2.default)(this.$parent, 'md-tabs');
+    this.parentBoards = (0, _getClosestVueParent2.default)(this.$parent, 'md-boards');
 
-    if (!this.parentTabs) {
-      throw new Error('You must wrap the md-tab in a md-tabs');
+    if (!this.parentBoards) {
+      throw new Error('You must wrap the md-board in a md-boards');
     }
 
     this.mounted = true;
-    this.parentTabs.updateTab(tabData);
+    this.parentBoards.updateBoard(boardData);
 
     if (this.mdActive) {
-      this.parentTabs.setActiveTab(tabData);
+      this.parentBoards.setActiveBoard(boardData);
     }
   },
   beforeDestroy: function beforeDestroy() {
-    this.parentTabs.unregisterTab(this.getTabData());
+    this.parentBoards.unregisterBoard(this.getBoardData());
   }
 };
 module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 19:
-/***/ (function(module, exports, __webpack_require__) {
-
-var shared = __webpack_require__(22)('keys')
-  , uid    = __webpack_require__(20);
-module.exports = function(key){
-  return shared[key] || (shared[key] = uid(key));
-};
-
-/***/ }),
-
-/***/ 190:
+/***/ 167:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -593,17 +508,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
-  name: 'md-tabs',
   props: {
     mdFixed: Boolean,
     mdCentered: Boolean,
     mdRight: Boolean,
-    mdNavigation: {
-      type: Boolean,
-      default: true
-    },
     mdDynamicHeight: {
       type: Boolean,
       default: true
@@ -611,27 +535,46 @@ exports.default = {
     mdElevation: {
       type: [String, Number],
       default: 0
+    },
+    mdAuto: {
+      type: Boolean,
+      default: false
+    },
+    mdDuration: {
+      type: Number,
+      default: 5000
+    },
+    mdControls: {
+      type: Boolean,
+      default: false
+    },
+    mdInfinite: {
+      type: Boolean,
+      default: false
+    },
+    mdSwipeable: Boolean,
+    mdSwipeDistance: {
+      type: Number,
+      default: 100
     }
   },
   mixins: [_mixin2.default],
   data: function data() {
     return {
-      tabList: {},
-      activeTab: null,
-      activeTabNumber: 0,
+      boardList: {},
+      activeBoard: null,
+      activeBoardNumber: 0,
       hasIcons: false,
       hasLabel: false,
-      hasNavigationScroll: false,
-      isNavigationOnStart: true,
-      isNavigationOnEnd: false,
       transitionControl: null,
       transitionOff: false,
       contentHeight: '0px',
-      contentWidth: '0px'
+      contentWidth: '0px',
+      autoTransition: null
     };
   },
   computed: {
-    tabClasses: function tabClasses() {
+    boardClasses: function boardClasses() {
       return {
         'md-dynamic-height': this.mdDynamicHeight,
         'md-transition-off': this.transitionOff
@@ -643,99 +586,88 @@ exports.default = {
         'md-has-label': this.hasLabel,
         'md-fixed': this.mdFixed,
         'md-right': !this.mdCentered && this.mdRight,
-        'md-centered': this.mdCentered || this.mdFixed,
-        'md-has-navigation-scroll': this.hasNavigationScroll
+        'md-centered': this.mdCentered || this.mdFixed
       };
     },
     indicatorClasses: function indicatorClasses() {
-      var toLeft = this.lastIndicatorNumber > this.activeTabNumber;
+      var toLeft = this.lastIndicatorNumber > this.activeBoardNumber;
 
-      this.lastIndicatorNumber = this.activeTabNumber;
+      this.lastIndicatorNumber = this.activeBoardNumber;
 
       return {
         'md-transition-off': this.transitionOff,
         'md-to-right': !toLeft,
         'md-to-left': toLeft
       };
-    },
-    navigationLeftButtonClasses: function navigationLeftButtonClasses() {
-      return {
-        'md-disabled': this.isNavigationOnStart
-      };
-    },
-    navigationRightButtonClasses: function navigationRightButtonClasses() {
-      return {
-        'md-disabled': this.isNavigationOnEnd
-      };
     }
   },
   methods: {
     getHeaderClass: function getHeaderClass(header) {
       return {
-        'md-active': this.activeTab === header.id,
+        'md-active': this.activeBoard === header.id,
         'md-disabled': header.disabled
       };
     },
-    registerTab: function registerTab(tabData) {
-      this.$set(this.tabList, tabData.id, tabData);
+    registerBoard: function registerBoard(boardData) {
+      this.boardList[boardData.id] = boardData;
     },
-    unregisterTab: function unregisterTab(tabData) {
-      this.$delete(this.tabList, tabData.id);
+    unregisterBoard: function unregisterBoard(boardData) {
+      delete this.boardList[boardData.id];
     },
-    updateTab: function updateTab(tabData) {
-      this.registerTab(tabData);
+    updateBoard: function updateBoard(boardData) {
+      this.registerBoard(boardData);
 
-      if (tabData.active) {
-        if (!tabData.disabled) {
-          this.setActiveTab(tabData);
-        } else if ((0, _keys2.default)(this.tabList).length) {
-          var tabsIds = (0, _keys2.default)(this.tabList);
-          var targetIndex = tabsIds.indexOf(tabData.id) + 1;
-          var target = tabsIds[targetIndex];
+      if (boardData.active) {
+        if (!boardData.disabled) {
+          this.setActiveBoard(boardData);
+        } else if ((0, _keys2.default)(this.boardList).length) {
+          var boardsIds = (0, _keys2.default)(this.boardList);
+          var targetIndex = boardsIds.indexOf(boardData.id) + 1;
+          var target = boardsIds[targetIndex];
 
           if (target) {
-            this.setActiveTab(this.tabList[target]);
+            this.setActiveBoard(this.boardList[target]);
           } else {
-            this.setActiveTab(this.tabList[0]);
+            this.setActiveBoard(this.boardList[0]);
           }
         }
       }
     },
     observeElementChanges: function observeElementChanges() {
       this.parentObserver = new MutationObserver((0, _throttle2.default)(this.calculateOnWatch, 50));
-      this.parentObserver.observe(this.$refs.tabContent, {
+      this.parentObserver.observe(this.$refs.boardsContent, {
         childList: true,
         attributes: true,
         subtree: true
       });
     },
-    getTabIndex: function getTabIndex(id) {
-      var idList = (0, _keys2.default)(this.tabList);
+    getBoardIndex: function getBoardIndex(id) {
+      var idList = (0, _keys2.default)(this.boardList);
 
       return idList.indexOf(id);
     },
     calculateIndicatorPos: function calculateIndicatorPos() {
-      if (this.$refs.tabHeader && this.$refs.tabHeader[this.activeTabNumber]) {
-        var tabsWidth = this.$el.offsetWidth;
-        var activeTab = this.$refs.tabHeader[this.activeTabNumber];
-        var left = activeTab.offsetLeft - this.$refs.tabsContainer.scrollLeft;
-        var right = tabsWidth - left - activeTab.offsetWidth;
+      if (this.$refs.boardHeader && this.$refs.boardHeader[this.activeBoardNumber]) {
+        var boardsWidth = this.$el.offsetWidth;
+        var activeBoard = this.$refs.boardHeader[this.activeBoardNumber];
+        var left = activeBoard.offsetLeft;
+        var right = boardsWidth - left - activeBoard.offsetWidth;
 
         this.$refs.indicator.style.left = left + 'px';
         this.$refs.indicator.style.right = right + 'px';
       }
     },
-    calculateTabsWidthAndPosition: function calculateTabsWidthAndPosition() {
+    calculateBoardsWidthAndPosition: function calculateBoardsWidthAndPosition() {
       var width = this.$el.offsetWidth;
       var index = 0;
 
-      this.contentWidth = width * this.activeTabNumber + 'px';
+      this.contentWidth = width * this.activeBoardNumber + 'px';
 
-      for (var tabId in this.tabList) {
-        var tab = this.tabList[tabId];
+      for (var boardId in this.boardList) {
+        var board = this.boardList[boardId];
 
-        tab.ref.width = width + 'px';
-        tab.ref.left = width * index + 'px';
+        board.ref.width = width + 'px';
+        board.ref.left = width * index + 'px';
         index++;
       }
     },
@@ -743,8 +675,8 @@ exports.default = {
       var _this = this;
 
       this.$nextTick((function () {
-        if ((0, _keys2.default)(_this.tabList).length) {
-          var height = _this.tabList[_this.activeTab].ref.$el.offsetHeight;
+        if ((0, _keys2.default)(_this.boardList).length) {
+          var height = _this.boardList[_this.activeBoard].ref.$el.offsetHeight;
 
           _this.contentHeight = height + 'px';
         }
@@ -755,9 +687,8 @@ exports.default = {
 
       window.requestAnimationFrame((function () {
         _this2.calculateIndicatorPos();
-        _this2.calculateTabsWidthAndPosition();
+        _this2.calculateBoardsWidthAndPosition();
         _this2.calculateContentHeight();
-        _this2.checkNavigationScroll();
       }));
     },
     debounceTransition: function debounceTransition() {
@@ -777,56 +708,84 @@ exports.default = {
       this.transitionOff = true;
       this.calculateOnWatch();
     },
-    calculateScrollPos: function calculateScrollPos() {
-      var _$refs$tabsContainer = this.$refs.tabsContainer,
-          scrollLeft = _$refs$tabsContainer.scrollLeft,
-          scrollWidth = _$refs$tabsContainer.scrollWidth,
-          clientWidth = _$refs$tabsContainer.clientWidth;
-
-
-      this.isNavigationOnStart = scrollLeft < 32;
-      this.isNavigationOnEnd = scrollWidth - scrollLeft - 32 < clientWidth;
-    },
-    handleNavigationScroll: function handleNavigationScroll() {
+    start: function start() {
       var _this4 = this;
 
-      window.requestAnimationFrame((function () {
-        _this4.calculateIndicatorPos();
-        _this4.calculateScrollPos();
-      }));
+      if (this.autoTransition) {
+        window.clearInterval(this.autoTransition);
+      }
+      this.autoTransition = window.setInterval((function () {
+        _this4.moveNextBoard();
+      }), this.mdDuration);
     },
-    checkNavigationScroll: function checkNavigationScroll() {
-      var _$refs$tabsContainer2 = this.$refs.tabsContainer,
-          scrollWidth = _$refs$tabsContainer2.scrollWidth,
-          clientWidth = _$refs$tabsContainer2.clientWidth;
-
-
-      this.hasNavigationScroll = scrollWidth > clientWidth;
-    },
-    setActiveTab: function setActiveTab(tabData) {
-      this.hasIcons = !!tabData.icon;
-      this.hasLabel = !!tabData.label;
-      this.activeTab = tabData.id;
-      this.activeTabNumber = this.getTabIndex(this.activeTab);
+    setActiveBoard: function setActiveBoard(boardData, reset) {
+      if (this.mdAuto && reset) {
+        this.start();
+      }
+      this.hasIcons = !!boardData.icon;
+      this.hasLabel = !!boardData.label;
+      this.activeBoard = boardData.id;
+      this.activeBoardNumber = this.getBoardIndex(this.activeBoard);
       this.calculatePosition();
-      this.$emit('change', this.activeTabNumber);
+      this.$emit('change', this.activeBoardNumber);
     },
-    navigationScrollLeft: function navigationScrollLeft() {
-      var _$refs$tabsContainer3 = this.$refs.tabsContainer,
-          scrollLeft = _$refs$tabsContainer3.scrollLeft,
-          clientWidth = _$refs$tabsContainer3.clientWidth;
+    movePrevBoard: function movePrevBoard() {
+      var boardsIds = (0, _keys2.default)(this.boardList);
+      var targetIndex = boardsIds.indexOf(this.activeBoard) - 1;
+      var target = boardsIds[targetIndex];
 
+      if (target) {
+        this.setActiveBoard(this.boardList[target], true);
+      } else if (this.mdInfinite) {
+        var lastBoard = (0, _keys2.default)(this.boardList)[(0, _keys2.default)(this.boardList).length - 1];
 
-      this.$refs.tabsContainer.scrollLeft = Math.max(0, scrollLeft - clientWidth);
+        this.setActiveBoard(this.boardList[lastBoard], true);
+      }
     },
-    navigationScrollRight: function navigationScrollRight() {
-      var _$refs$tabsContainer4 = this.$refs.tabsContainer,
-          scrollLeft = _$refs$tabsContainer4.scrollLeft,
-          clientWidth = _$refs$tabsContainer4.clientWidth,
-          scrollWidth = _$refs$tabsContainer4.scrollWidth;
+    moveNextBoard: function moveNextBoard() {
+      var boardsIds = (0, _keys2.default)(this.boardList);
+      var targetIndex = boardsIds.indexOf(this.activeBoard) + 1;
+      var target = boardsIds[targetIndex];
 
+      if (target) {
+        this.setActiveBoard(this.boardList[target], true);
+      } else if (this.mdInfinite) {
+        var firstBoard = (0, _keys2.default)(this.boardList)[0];
 
-      this.$refs.tabsContainer.scrollLeft = Math.min(scrollWidth, scrollLeft + clientWidth);
+        this.setActiveBoard(this.boardList[firstBoard], true);
+      }
+    },
+    isHorizontallyInside: function isHorizontallyInside(positionX) {
+      return positionX > this.mountedRect.left && positionX < this.mountedRect.left + this.mountedRect.width;
+    },
+    isVerticallyInside: function isVerticallyInside(positionY) {
+      return positionY > this.mountedRect.top && positionY < this.mountedRect.top + this.mountedRect.height;
+    },
+    handleTouchStart: function handleTouchStart(event) {
+      this.mountedRect = this.$refs.boardsContent.getBoundingClientRect();
+      var positionX = event.changedTouches[0].clientX;
+      var positionY = event.changedTouches[0].clientY;
+
+      if (this.isHorizontallyInside(positionX) && this.isVerticallyInside(positionY)) {
+        this.initialTouchPosition = positionX;
+        this.canMove = true;
+      }
+    },
+    handleTouchEnd: function handleTouchEnd(event) {
+      if (this.canMove) {
+        var positionX = event.changedTouches[0].clientX;
+
+        var difference = this.initialTouchPosition - positionX;
+
+        var action = difference > 0 ? 'moveNextBoard' : 'movePrevBoard';
+
+        if (Math.abs(difference) > this.mdSwipeDistance) {
+          this[action]();
+        }
+
+        this.canMove = false;
+        this.initialTouchPosition = null;
+      }
     }
   },
   mounted: function mounted() {
@@ -836,10 +795,23 @@ exports.default = {
       _this5.observeElementChanges();
       window.addEventListener('resize', _this5.calculateOnResize);
 
-      if ((0, _keys2.default)(_this5.tabList).length && !_this5.activeTab) {
-        var firstTab = (0, _keys2.default)(_this5.tabList)[0];
+      if ((0, _keys2.default)(_this5.boardList).length && !_this5.activeBoard) {
+        var firstBoard = (0, _keys2.default)(_this5.boardList)[0];
 
-        _this5.setActiveTab(_this5.tabList[firstTab]);
+        _this5.setActiveBoard(_this5.boardList[firstBoard]);
+      }
+
+      if (_this5.mdSwipeable) {
+        _this5.mountedRect = _this5.$refs.boardsContent.getBoundingClientRect();
+        _this5.initialTouchPosition = null;
+        _this5.canMove = false;
+
+        document.addEventListener('touchstart', _this5.handleTouchStart);
+        document.addEventListener('touchend', _this5.handleTouchEnd);
+      }
+
+      if (_this5.mdAuto) {
+        _this5.start();
       }
     }));
   },
@@ -848,10 +820,57 @@ exports.default = {
       this.parentObserver.disconnect();
     }
 
+    if (this.autoTransition) {
+      window.clearTimeout(this.autoTransition);
+    }
+
     window.removeEventListener('resize', this.calculateOnResize);
+
+    if (this.mdSwipeable) {
+      document.removeEventListener('touchstart', this.handleTouchStart);
+      document.removeEventListener('touchend', this.handleTouchEnd);
+    }
   }
 };
 module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports) {
+
+module.exports = function(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  };
+};
+
+/***/ }),
+
+/***/ 18:
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys       = __webpack_require__(31)
+  , enumBugKeys = __webpack_require__(21);
+
+module.exports = Object.keys || function keys(O){
+  return $keys(O, enumBugKeys);
+};
+
+/***/ }),
+
+/***/ 19:
+/***/ (function(module, exports, __webpack_require__) {
+
+var shared = __webpack_require__(22)('keys')
+  , uid    = __webpack_require__(20);
+module.exports = function(key){
+  return shared[key] || (shared[key] = uid(key));
+};
 
 /***/ }),
 
@@ -909,13 +928,6 @@ module.exports = function(it){
 
 /***/ }),
 
-/***/ 236:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ 24:
 /***/ (function(module, exports) {
 
@@ -937,6 +949,13 @@ var isObject = __webpack_require__(6)
 module.exports = function(it){
   return is ? document.createElement(it) : {};
 };
+
+/***/ }),
+
+/***/ 250:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 
@@ -984,6 +1003,13 @@ module.exports = function(fn, that, length){
 
 /***/ }),
 
+/***/ 274:
+/***/ (function(module, exports) {
+
+module.exports = ".THEME_NAME.md-boards > .md-boards-navigation {\n  background-color: transparent; }\n  .THEME_NAME.md-boards > .md-boards-navigation .md-board-header {\n    color: BACKGROUND-CONTRAST-0.54; }\n    .THEME_NAME.md-boards > .md-boards-navigation .md-board-header.md-active, .THEME_NAME.md-boards > .md-boards-navigation .md-board-header:focus {\n      color: PRIMARY-COLOR; }\n    .THEME_NAME.md-boards > .md-boards-navigation .md-board-header.md-disabled {\n      color: BACKGROUND-CONTRAST-0.26; }\n  .THEME_NAME.md-boards > .md-boards-navigation .md-button {\n    color: PRIMARY-COLOR; }\n\n.THEME_NAME.md-boards.md-transparent > .md-boards-navigation {\n  background-color: transparent; }\n  .THEME_NAME.md-boards.md-transparent > .md-boards-navigation .md-board-header {\n    color: PRIMARY-CONTRAST-0.54; }\n    .THEME_NAME.md-boards.md-transparent > .md-boards-navigation .md-board-header.md-active, .THEME_NAME.md-boards.md-transparent > .md-boards-navigation .md-board-header:focus {\n      color: PRIMARY-CONTRAST; }\n    .THEME_NAME.md-boards.md-transparent > .md-boards-navigation .md-board-header.md-disabled {\n      color: PRIMARY-CONTRAST-0.26; }\n  .THEME_NAME.md-boards.md-transparent > .md-boards-navigation .md-button {\n    color: PRIMARY-CONTRAST-0.54; }\n\n.THEME_NAME.md-boards.md-primary > .md-boards-navigation {\n  background-color: PRIMARY-COLOR; }\n  .THEME_NAME.md-boards.md-primary > .md-boards-navigation .md-board-header {\n    color: PRIMARY-CONTRAST-0.54; }\n    .THEME_NAME.md-boards.md-primary > .md-boards-navigation .md-board-header.md-active, .THEME_NAME.md-boards.md-primary > .md-boards-navigation .md-board-header:focus {\n      color: PRIMARY-CONTRAST; }\n    .THEME_NAME.md-boards.md-primary > .md-boards-navigation .md-board-header.md-disabled {\n      color: PRIMARY-CONTRAST-0.26; }\n  .THEME_NAME.md-boards.md-primary > .md-boards-navigation .md-button {\n    color: PRIMARY-CONTRAST-0.54; }\n\n.THEME_NAME.md-boards.md-accent > .md-boards-navigation {\n  background-color: ACCENT-COLOR; }\n  .THEME_NAME.md-boards.md-accent > .md-boards-navigation .md-board-header {\n    color: ACCENT-CONTRAST-0.54; }\n    .THEME_NAME.md-boards.md-accent > .md-boards-navigation .md-board-header.md-active, .THEME_NAME.md-boards.md-accent > .md-boards-navigation .md-board-header:focus {\n      color: ACCENT-CONTRAST; }\n    .THEME_NAME.md-boards.md-accent > .md-boards-navigation .md-board-header.md-disabled {\n      color: ACCENT-CONTRAST-0.26; }\n  .THEME_NAME.md-boards.md-accent > .md-boards-navigation .md-button {\n    color: ACCENT-CONTRAST-0.54; }\n\n.THEME_NAME.md-boards.md-warn > .md-boards-navigation {\n  background-color: WARN-COLOR; }\n  .THEME_NAME.md-boards.md-warn > .md-boards-navigation .md-board-header {\n    color: WARN-CONTRAST-0.54; }\n    .THEME_NAME.md-boards.md-warn > .md-boards-navigation .md-board-header.md-active, .THEME_NAME.md-boards.md-warn > .md-boards-navigation .md-board-header:focus {\n      color: WARN-CONTRAST; }\n    .THEME_NAME.md-boards.md-warn > .md-boards-navigation .md-board-header.md-disabled {\n      color: WARN-CONTRAST-0.26; }\n  .THEME_NAME.md-boards.md-warn > .md-boards-navigation .md-button {\n    color: WARN-CONTRAST-0.54; }\n"
+
+/***/ }),
+
 /***/ 28:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -992,13 +1018,6 @@ var cof = __webpack_require__(24);
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
-
-/***/ }),
-
-/***/ 286:
-/***/ (function(module, exports) {
-
-module.exports = ".THEME_NAME.md-tabs > .md-tabs-navigation {\n  background-color: PRIMARY-COLOR; }\n  .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header {\n    color: PRIMARY-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header:focus {\n      color: PRIMARY-CONTRAST; }\n    .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: PRIMARY-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-indicator {\n    background-color: ACCENT-COLOR; }\n  .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header-navigation-button {\n    color: PRIMARY-CONTRAST-0.54;\n    background-color: PRIMARY-COLOR; }\n\n.THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation {\n  background-color: transparent;\n  border-bottom: 1px solid BACKGROUND-CONTRAST-0.12; }\n  .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header {\n    color: BACKGROUND-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header:focus {\n      color: PRIMARY-COLOR; }\n    .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: BACKGROUND-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-indicator {\n    background-color: PRIMARY-COLOR; }\n\n.THEME_NAME.md-tabs.md-accent > .md-tabs-navigation {\n  background-color: ACCENT-COLOR; }\n  .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header {\n    color: ACCENT-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header:focus {\n      color: ACCENT-CONTRAST; }\n    .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: ACCENT-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-indicator {\n    background-color: BACKGROUND-COLOR; }\n\n.THEME_NAME.md-tabs.md-warn > .md-tabs-navigation {\n  background-color: WARN-COLOR; }\n  .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header {\n    color: WARN-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header:focus {\n      color: WARN-CONTRAST; }\n    .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: WARN-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-indicator {\n    background-color: BACKGROUND-COLOR; }\n"
 
 /***/ }),
 
@@ -1093,6 +1112,80 @@ module.exports = function(IS_INCLUDES){
 
 /***/ }),
 
+/***/ 334:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(166),
+  /* template */
+  __webpack_require__(400),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdOnboarding/mdBoard.vue"
+if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] mdBoard.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-47ba0acd", Component.options)
+  } else {
+    hotAPI.reload("data-v-47ba0acd", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ 335:
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/* styles */
+__webpack_require__(250)
+
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(167),
+  /* template */
+  __webpack_require__(426),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdOnboarding/mdBoards.vue"
+if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] mdBoards.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-999a2014", Component.options)
+  } else {
+    hotAPI.reload("data-v-999a2014", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ 34:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1113,80 +1206,6 @@ module.exports = { "default": __webpack_require__(38), __esModule: true };
 
 /***/ }),
 
-/***/ 357:
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(0)(
-  /* script */
-  __webpack_require__(189),
-  /* template */
-  __webpack_require__(364),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdTabs/mdTab.vue"
-if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] mdTab.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-01de8cdf", Component.options)
-  } else {
-    hotAPI.reload("data-v-01de8cdf", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-
-/***/ 358:
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/* styles */
-__webpack_require__(236)
-
-var Component = __webpack_require__(0)(
-  /* script */
-  __webpack_require__(190),
-  /* template */
-  __webpack_require__(394),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdTabs/mdTabs.vue"
-if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] mdTabs.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3d9eb024", Component.options)
-  } else {
-    hotAPI.reload("data-v-3d9eb024", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-
 /***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1202,28 +1221,6 @@ var uniqueId = function uniqueId() {
 
 exports.default = uniqueId;
 module.exports = exports["default"];
-
-/***/ }),
-
-/***/ 364:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "md-tab",
-    style: (_vm.styles),
-    attrs: {
-      "id": _vm.tabId
-    }
-  }, [_vm._t("default")], 2)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-01de8cdf", module.exports)
-  }
-}
 
 /***/ }),
 
@@ -1251,101 +1248,33 @@ module.exports = function(KEY, exec){
 
 /***/ }),
 
-/***/ 394:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "md-tabs",
-    class: [_vm.themeClass, _vm.tabClasses]
-  }, [_c('md-whiteframe', {
-    ref: "tabNavigation",
-    staticClass: "md-tabs-navigation",
-    class: _vm.navigationClasses,
-    attrs: {
-      "md-tag": "nav",
-      "md-elevation": _vm.mdElevation
-    }
-  }, [_c('div', {
-    ref: "tabsContainer",
-    staticClass: "md-tabs-navigation-container",
-    on: {
-      "scroll": _vm.handleNavigationScroll
-    }
-  }, [_c('div', {
-    staticClass: "md-tabs-navigation-scroll-container"
-  }, [_vm._l((_vm.tabList), (function(header) {
-    return _c('button', {
-      key: header.id,
-      ref: "tabHeader",
-      refInFor: true,
-      staticClass: "md-tab-header",
-      class: _vm.getHeaderClass(header),
-      attrs: {
-        "type": "button",
-        "disabled": header.disabled
-      },
-      on: {
-        "click": function($event) {
-          _vm.setActiveTab(header)
-        }
-      }
-    }, [_c('md-ink-ripple', {
-      attrs: {
-        "md-disabled": header.disabled
-      }
-    }), _vm._v(" "), _c('div', {
-      staticClass: "md-tab-header-container"
-    }, [(header.icon) ? _c('md-icon', [_vm._v(_vm._s(header.icon))]) : _vm._e(), _vm._v(" "), (header.label) ? _c('span', [_vm._v(_vm._s(header.label))]) : _vm._e(), _vm._v(" "), (header.tooltip) ? _c('md-tooltip', {
-      attrs: {
-        "md-direction": header.tooltipDirection,
-        "md-delay": header.tooltipDelay
-      }
-    }, [_vm._v(_vm._s(header.tooltip))]) : _vm._e()], 1)], 1)
-  })), _vm._v(" "), _c('span', {
-    ref: "indicator",
-    staticClass: "md-tab-indicator",
-    class: _vm.indicatorClasses
-  })], 2)]), _vm._v(" "), (_vm.mdNavigation && _vm.hasNavigationScroll) ? _c('button', {
-    staticClass: "md-tab-header-navigation-button md-left",
-    class: _vm.navigationLeftButtonClasses,
-    on: {
-      "click": _vm.navigationScrollLeft
-    }
-  }, [_c('md-icon', [_vm._v("keyboard_arrow_left")])], 1) : _vm._e(), _vm._v(" "), (_vm.mdNavigation && _vm.hasNavigationScroll) ? _c('button', {
-    staticClass: "md-tab-header-navigation-button md-right",
-    class: _vm.navigationRightButtonClasses,
-    on: {
-      "click": _vm.navigationScrollRight
-    }
-  }, [_c('md-icon', [_vm._v("keyboard_arrow_right")])], 1) : _vm._e()]), _vm._v(" "), _c('div', {
-    ref: "tabContent",
-    staticClass: "md-tabs-content",
-    style: ({
-      height: _vm.contentHeight
-    })
-  }, [_c('div', {
-    staticClass: "md-tabs-wrapper",
-    style: ({
-      transform: ("translate3D(-" + _vm.contentWidth + ", 0, 0)")
-    })
-  }, [_vm._t("default")], 2)])], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3d9eb024", module.exports)
-  }
-}
-
-/***/ }),
-
 /***/ 4:
 /***/ (function(module, exports) {
 
 var core = module.exports = {version: '2.4.0'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+
+/***/ }),
+
+/***/ 400:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "md-board",
+    style: (_vm.styles),
+    attrs: {
+      "id": _vm.boardId
+    }
+  }, [_vm._t("default")], 2)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-47ba0acd", module.exports)
+  }
+}
 
 /***/ }),
 
@@ -1361,6 +1290,97 @@ __webpack_require__(39)('keys', (function(){
     return $keys(toObject(it));
   };
 }));
+
+/***/ }),
+
+/***/ 426:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "md-boards",
+    class: [_vm.themeClass, _vm.boardClasses]
+  }, [_c('div', {
+    ref: "boardsContent",
+    staticClass: "md-boards-content",
+    style: ({
+      height: _vm.contentHeight
+    })
+  }, [_c('div', {
+    staticClass: "md-boards-wrapper",
+    style: ({
+      transform: ("translate3D(-" + _vm.contentWidth + ", 0, 0)")
+    })
+  }, [_vm._t("default")], 2)]), _vm._v(" "), _c('nav', {
+    ref: "boardNavigation",
+    staticClass: "md-boards-navigation",
+    class: _vm.navigationClasses
+  }, [(!_vm.mdControls) ? _c('span', {
+    staticStyle: {
+      "flex": "1"
+    }
+  }) : _vm._e(), _vm._v(" "), (_vm.mdControls) ? _c('md-button', {
+    nativeOn: {
+      "click": function($event) {
+        _vm.movePrevBoard()
+      }
+    }
+  }, [_c('div', {
+    staticClass: "md-board-header-container"
+  }, [_c('md-icon', {
+    staticClass: "md-control"
+  }, [_vm._v("chevron_left")])], 1)]) : _vm._e(), _vm._v(" "), _c('span', {
+    staticStyle: {
+      "flex": "1"
+    }
+  }), _vm._v(" "), _vm._l((_vm.boardList), (function(header) {
+    return _c('button', {
+      key: header.id,
+      ref: "boardHeader",
+      refInFor: true,
+      staticClass: "md-board-header",
+      class: _vm.getHeaderClass(header),
+      attrs: {
+        "type": "button",
+        "disabled": header.disabled
+      },
+      on: {
+        "click": function($event) {
+          _vm.setActiveBoard(header, true)
+        }
+      }
+    }, [_c('div', {
+      staticClass: "md-board-header-container"
+    }, [_c('md-icon', [_vm._v("fiber_manual_record")])], 1)])
+  })), _vm._v(" "), _c('span', {
+    staticStyle: {
+      "flex": "1"
+    }
+  }), _vm._v(" "), (_vm.mdControls) ? _c('md-button', {
+    nativeOn: {
+      "click": function($event) {
+        _vm.moveNextBoard()
+      }
+    }
+  }, [_c('div', {
+    staticClass: "md-board-header-container"
+  }, [_c('md-icon', {
+    staticClass: "md-control"
+  }, [_vm._v("chevron_right")])], 1)]) : _vm._e(), _vm._v(" "), (!_vm.mdControls) ? _c('span', {
+    staticStyle: {
+      "flex": "1"
+    }
+  }) : _vm._e(), _vm._v(" "), _c('span', {
+    ref: "indicator"
+  })], 2)])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-999a2014", module.exports)
+  }
+}
 
 /***/ }),
 
@@ -1393,10 +1413,10 @@ module.exports = exports["default"];
 
 /***/ }),
 
-/***/ 467:
+/***/ 455:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(105);
+module.exports = __webpack_require__(93);
 
 
 /***/ }),
@@ -1484,6 +1504,41 @@ exports.f = __webpack_require__(3) ? Object.defineProperty : function defineProp
   if('value' in Attributes)O[P] = Attributes.value;
   return O;
 };
+
+/***/ }),
+
+/***/ 93:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = install;
+
+var _mdBoards = __webpack_require__(335);
+
+var _mdBoards2 = _interopRequireDefault(_mdBoards);
+
+var _mdBoard = __webpack_require__(334);
+
+var _mdBoard2 = _interopRequireDefault(_mdBoard);
+
+var _mdBoards3 = __webpack_require__(274);
+
+var _mdBoards4 = _interopRequireDefault(_mdBoards3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function install(Vue) {
+  Vue.component('md-boards', _mdBoards2.default);
+  Vue.component('md-board', _mdBoard2.default);
+
+  Vue.material.styles.push(_mdBoards4.default);
+}
+module.exports = exports['default'];
 
 /***/ })
 

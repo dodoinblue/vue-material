@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,21 +65,24 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "/";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 413);
+/******/ 	return __webpack_require__(__webpack_require__.s = 454);
 /******/ })
 /************************************************************************/
 /******/ ({
 
 /***/ 0:
 /***/ (function(module, exports) {
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
 
 module.exports = function normalizeComponent (
   rawScriptExports,
@@ -115,11 +118,12 @@ module.exports = function normalizeComponent (
 
   // inject cssModules
   if (cssModules) {
-    var computed = options.computed || (options.computed = {})
+    var computed = Object.create(options.computed || null)
     Object.keys(cssModules).forEach((function (key) {
       var module = cssModules[key]
       computed[key] = function () { return module }
     }))
+    options.computed = computed
   }
 
   return {
@@ -132,77 +136,7 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 
-/***/ 106:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = install;
-
-var _mdMenu = __webpack_require__(301);
-
-var _mdMenu2 = _interopRequireDefault(_mdMenu);
-
-var _mdMenuItem = __webpack_require__(303);
-
-var _mdMenuItem2 = _interopRequireDefault(_mdMenuItem);
-
-var _mdMenuContent = __webpack_require__(302);
-
-var _mdMenuContent2 = _interopRequireDefault(_mdMenuContent);
-
-var _mdMenu3 = __webpack_require__(246);
-
-var _mdMenu4 = _interopRequireDefault(_mdMenu3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function install(Vue) {
-  Vue.component('md-menu', _mdMenu2.default);
-  Vue.component('md-menu-item', _mdMenuItem2.default);
-  Vue.component('md-menu-content', _mdMenuContent2.default);
-
-  Vue.material.styles.push(_mdMenu4.default);
-}
-module.exports = exports['default'];
-
-/***/ }),
-
-/***/ 12:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var getClosestVueParent = function getClosestVueParent($parent, cssClass) {
-  if (!$parent || !$parent.$el) {
-    return false;
-  }
-
-  if ($parent._uid === 0) {
-    return false;
-  }
-
-  if ($parent.$el.classList.contains(cssClass)) {
-    return $parent;
-  }
-
-  return getClosestVueParent($parent.$parent, cssClass);
-};
-
-exports.default = getClosestVueParent;
-module.exports = exports["default"];
-
-/***/ }),
-
-/***/ 129:
+/***/ 120:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -266,11 +200,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _transitionEndEventName = __webpack_require__(39);
+var _transitionEndEventName = __webpack_require__(42);
 
 var _transitionEndEventName2 = _interopRequireDefault(_transitionEndEventName);
 
-var _getInViewPosition = __webpack_require__(129);
+var _getInViewPosition = __webpack_require__(120);
 
 var _getInViewPosition2 = _interopRequireDefault(_getInViewPosition);
 
@@ -288,6 +222,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 
 exports.default = {
+  name: 'md-menu',
   props: {
     mdSize: {
       type: [Number, String],
@@ -509,6 +444,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 
 exports.default = {
+  name: 'md-menu-content',
   data: function data() {
     return {
       oldHighlight: false,
@@ -543,8 +479,13 @@ exports.default = {
     },
     fireClick: function fireClick() {
       if (this.highlighted > 0) {
-        this.$children[0].$children[this.highlighted - 1].$el.click();
+        this.getOptions()[this.highlighted - 1].$el.click();
       }
+    },
+    getOptions: function getOptions() {
+      return this.$children[0].$children.filter((function (child) {
+        return child.$el.classList.contains('md-option');
+      }));
     }
   },
   mounted: function mounted() {
@@ -569,11 +510,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _getClosestVueParent = __webpack_require__(12);
+var _getClosestVueParent = __webpack_require__(8);
 
 var _getClosestVueParent2 = _interopRequireDefault(_getClosestVueParent);
 
-__webpack_require__(199);
+__webpack_require__(223);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -591,6 +532,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 
 exports.default = {
+  name: 'md-menu-item',
   props: {
     href: String,
     target: String,
@@ -661,7 +603,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 199:
+/***/ 223:
 /***/ (function(module, exports) {
 
 if (!Element.prototype.scrollIntoViewIfNeeded) {
@@ -694,38 +636,38 @@ if (!Element.prototype.scrollIntoViewIfNeeded) {
 
 /***/ }),
 
-/***/ 231:
+/***/ 257:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 246:
+/***/ 273:
 /***/ (function(module, exports) {
 
 module.exports = ".THEME_NAME.md-menu-content .md-list {\n  background-color: BACKGROUND-COLOR;\n  color: BACKGROUND-CONTRAST; }\n  .THEME_NAME.md-menu-content .md-list .md-menu-item:hover .md-button:not([disabled]), .THEME_NAME.md-menu-content .md-list .md-menu-item:focus .md-button:not([disabled]), .THEME_NAME.md-menu-content .md-list .md-menu-item.md-highlighted .md-button:not([disabled]) {\n    background-color: BACKGROUND-CONTRAST-0.12; }\n  .THEME_NAME.md-menu-content .md-list .md-menu-item[disabled] {\n    color: BACKGROUND-CONTRAST-0.38; }\n"
 
 /***/ }),
 
-/***/ 301:
+/***/ 331:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(231)
+__webpack_require__(257)
 
 var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(163),
   /* template */
-  __webpack_require__(391),
+  __webpack_require__(432),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/mrufino/Projects/personal/github/vue-material/src/components/mdMenu/mdMenu.vue"
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdMenu/mdMenu.vue"
 if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] mdMenu.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -747,20 +689,20 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 302:
+/***/ 332:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(164),
   /* template */
-  __webpack_require__(384),
+  __webpack_require__(424),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/mrufino/Projects/personal/github/vue-material/src/components/mdMenu/mdMenuContent.vue"
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdMenu/mdMenuContent.vue"
 if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] mdMenuContent.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -782,20 +724,20 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 303:
+/***/ 333:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(165),
   /* template */
-  __webpack_require__(342),
+  __webpack_require__(377),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/mrufino/Projects/personal/github/vue-material/src/components/mdMenu/mdMenuItem.vue"
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdMenu/mdMenuItem.vue"
 if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] mdMenuItem.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -817,7 +759,7 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 342:
+/***/ 377:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -846,55 +788,7 @@ if (false) {
 
 /***/ }),
 
-/***/ 384:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "md-menu-content",
-    attrs: {
-      "tabindex": "-1"
-    },
-    on: {
-      "keydown": [function($event) {
-        if (_vm._k($event.keyCode, "esc", 27)) { return; }
-        $event.preventDefault();
-        _vm.close($event)
-      }, function($event) {
-        if (_vm._k($event.keyCode, "tab", 9)) { return; }
-        $event.preventDefault();
-        _vm.close($event)
-      }, function($event) {
-        if (_vm._k($event.keyCode, "up", 38)) { return; }
-        $event.preventDefault();
-        _vm.highlightItem('up')
-      }, function($event) {
-        if (_vm._k($event.keyCode, "down", 40)) { return; }
-        $event.preventDefault();
-        _vm.highlightItem('down')
-      }, function($event) {
-        if (_vm._k($event.keyCode, "enter", 13)) { return; }
-        $event.preventDefault();
-        _vm.fireClick($event)
-      }, function($event) {
-        if (_vm._k($event.keyCode, "space", 32)) { return; }
-        $event.preventDefault();
-        _vm.fireClick($event)
-      }]
-    }
-  }, [_c('md-list', [_vm._t("default")], 2)], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-863c0af6", module.exports)
-  }
-}
-
-/***/ }),
-
-/***/ 39:
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -924,7 +818,53 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 391:
+/***/ 424:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "md-menu-content",
+    attrs: {
+      "tabindex": "-1"
+    },
+    on: {
+      "keydown": [function($event) {
+        if (!('button' in $event) && _vm._k($event.keyCode, "esc", 27)) { return null; }
+        $event.preventDefault();
+        _vm.close($event)
+      }, function($event) {
+        if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9)) { return null; }
+        $event.preventDefault();
+        _vm.close($event)
+      }, function($event) {
+        if (!('button' in $event) && _vm._k($event.keyCode, "up", 38)) { return null; }
+        $event.preventDefault();
+        _vm.highlightItem('up')
+      }, function($event) {
+        if (!('button' in $event) && _vm._k($event.keyCode, "down", 40)) { return null; }
+        $event.preventDefault();
+        _vm.highlightItem('down')
+      }, function($event) {
+        if (!('button' in $event) && _vm._k($event.keyCode, "enter", 13)) { return null; }
+        _vm.fireClick($event)
+      }, function($event) {
+        if (!('button' in $event) && _vm._k($event.keyCode, "space", 32)) { return null; }
+        _vm.fireClick($event)
+      }]
+    }
+  }, [_c('md-list', [_vm._t("default")], 2)], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-863c0af6", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ 432:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -948,11 +888,81 @@ if (false) {
 
 /***/ }),
 
-/***/ 413:
+/***/ 454:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(106);
+module.exports = __webpack_require__(92);
 
+
+/***/ }),
+
+/***/ 8:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var getClosestVueParent = function getClosestVueParent($parent, cssClass) {
+  if (!$parent || !$parent.$el) {
+    return false;
+  }
+
+  if ($parent._uid === 0) {
+    return false;
+  }
+
+  if ($parent.$el.classList.contains(cssClass)) {
+    return $parent;
+  }
+
+  return getClosestVueParent($parent.$parent, cssClass);
+};
+
+exports.default = getClosestVueParent;
+module.exports = exports["default"];
+
+/***/ }),
+
+/***/ 92:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = install;
+
+var _mdMenu = __webpack_require__(331);
+
+var _mdMenu2 = _interopRequireDefault(_mdMenu);
+
+var _mdMenuItem = __webpack_require__(333);
+
+var _mdMenuItem2 = _interopRequireDefault(_mdMenuItem);
+
+var _mdMenuContent = __webpack_require__(332);
+
+var _mdMenuContent2 = _interopRequireDefault(_mdMenuContent);
+
+var _mdMenu3 = __webpack_require__(273);
+
+var _mdMenu4 = _interopRequireDefault(_mdMenu3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function install(Vue) {
+  Vue.component('md-menu', _mdMenu2.default);
+  Vue.component('md-menu-item', _mdMenuItem2.default);
+  Vue.component('md-menu-content', _mdMenuContent2.default);
+
+  Vue.material.styles.push(_mdMenu4.default);
+}
+module.exports = exports['default'];
 
 /***/ })
 

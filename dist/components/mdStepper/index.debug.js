@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 467);
+/******/ 	return __webpack_require__(__webpack_require__.s = 463);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -200,7 +200,7 @@ module.exports = function(it, key){
 
 /***/ }),
 
-/***/ 105:
+/***/ 101:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -211,25 +211,35 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = install;
 
-var _mdTabs = __webpack_require__(358);
+var _mdStepper = __webpack_require__(346);
 
-var _mdTabs2 = _interopRequireDefault(_mdTabs);
+var _mdStepper2 = _interopRequireDefault(_mdStepper);
 
-var _mdTab = __webpack_require__(357);
+var _mdStep = __webpack_require__(344);
 
-var _mdTab2 = _interopRequireDefault(_mdTab);
+var _mdStep2 = _interopRequireDefault(_mdStep);
 
-var _mdTabs3 = __webpack_require__(286);
+var _mdStepHeaderContainer = __webpack_require__(113);
 
-var _mdTabs4 = _interopRequireDefault(_mdTabs3);
+var _mdStepHeaderContainer2 = _interopRequireDefault(_mdStepHeaderContainer);
+
+var _mdStepHeader = __webpack_require__(345);
+
+var _mdStepHeader2 = _interopRequireDefault(_mdStepHeader);
+
+var _mdStepper3 = __webpack_require__(282);
+
+var _mdStepper4 = _interopRequireDefault(_mdStepper3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function install(Vue) {
-  Vue.component('md-tabs', _mdTabs2.default);
-  Vue.component('md-tab', _mdTab2.default);
+  Vue.component('md-stepper', _mdStepper2.default);
+  Vue.component('md-step', _mdStep2.default);
+  Vue.component('md-step-header-container', _mdStepHeaderContainer2.default);
+  Vue.component('md-step-header', _mdStepHeader2.default);
 
-  Vue.material.styles.push(_mdTabs4.default);
+  Vue.material.styles.push(_mdStepper4.default);
 }
 module.exports = exports['default'];
 
@@ -246,6 +256,60 @@ module.exports = __webpack_require__(3) ? function(object, key, value){
   object[key] = value;
   return object;
 };
+
+/***/ }),
+
+/***/ 113:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _uniqueId = __webpack_require__(36);
+
+var _uniqueId2 = _interopRequireDefault(_uniqueId);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  functional: true,
+  props: {
+    mdVertical: {
+      type: Boolean,
+      default: false
+    }
+  },
+  render: function render(createElement, _ref) {
+    var children = _ref.children,
+        props = _ref.props;
+
+    var insertDividerIntoArray = function insertDividerIntoArray(arr) {
+      return arr.reduce((function (result, element, index, array) {
+
+        result.push(element);
+
+        if (index < array.length - 1) {
+          var mdDivider = createElement('md-divider', { key: 'divider-' + (0, _uniqueId2.default)() });
+
+          result.push(mdDivider);
+        }
+
+        return result;
+      }), []);
+    };
+
+    if (!props.mdVertical) {
+      children = insertDividerIntoArray(children);
+    }
+
+    return createElement('div', { class: 'md-steps-navigation-container' }, children);
+  }
+};
+module.exports = exports['default'];
 
 /***/ }),
 
@@ -364,20 +428,7 @@ module.exports = function(bitmap, value){
 
 /***/ }),
 
-/***/ 18:
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys       = __webpack_require__(31)
-  , enumBugKeys = __webpack_require__(21);
-
-module.exports = Object.keys || function keys(O){
-  return $keys(O, enumBugKeys);
-};
-
-/***/ }),
-
-/***/ 189:
+/***/ 176:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -403,19 +454,44 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
-  name: 'md-tab',
+  name: 'md-step',
   props: {
     id: [String, Number],
-    mdLabel: [String, Number],
-    mdIcon: String,
     mdActive: Boolean,
-    mdDisabled: Boolean,
-    mdOptions: {
-      default: undefined
+    mdButtonBack: {
+      type: String,
+      default: 'BACK'
     },
-    mdTooltip: String,
+    mdButtonContinue: {
+      type: String,
+      default: 'CONTINUE'
+    },
+    mdContinue: {
+      type: Boolean,
+      default: true
+    },
+    mdDisabled: Boolean,
+    mdEditable: {
+      type: Boolean,
+      default: true
+    },
+    mdIcon: String,
+    mdLabel: [String, Number],
+    mdMessage: [String],
+    mdToolTip: String,
     mdTooltipDelay: {
       type: String,
       default: '0'
@@ -427,45 +503,85 @@ exports.default = {
   },
   data: function data() {
     return {
+      index: 0,
+      left: '0px',
       mounted: false,
-      tabId: this.id || 'tab-' + (0, _uniqueId2.default)(),
-      width: '0px',
-      left: '0px'
+      parentStepper: undefined,
+      stepId: this.id || 'step-' + (0, _uniqueId2.default)(),
+      vertical: false,
+      width: '0px'
     };
   },
 
   watch: {
     mdActive: function mdActive() {
-      this.updateTabData();
+      this.updateStepData();
+    },
+    mdContinue: function mdContinue() {
+      this.updateStepData();
+    },
+    mdEditable: function mdEditable() {
+      this.updateStepData();
     },
     mdDisabled: function mdDisabled() {
-      this.updateTabData();
+      this.updateStepData();
     },
     mdIcon: function mdIcon() {
-      this.updateTabData();
-    },
-
-    mdOptions: {
-      deep: true,
-      handler: function handler() {
-        this.updateTabData();
-      }
+      this.updateStepData();
     },
     mdLabel: function mdLabel() {
-      this.updateTabData();
+      this.updateStepData();
     },
-    mdTooltip: function mdTooltip() {
-      this.updateTabData();
+    mdMessage: function mdMessage() {
+      this.updateStepData();
+    },
+    mdToolTip: function mdToolTip() {
+      this.updateStepData();
     },
     mdTooltipDelay: function mdTooltipDelay() {
-      this.updateTabData();
+      this.updateStepData();
     },
     mdTooltipDirection: function mdTooltipDirection() {
-      this.updateTabData();
+      this.updateStepData();
     }
   },
   computed: {
+    canGoBack: function canGoBack() {
+      if (this.index === 0) {
+        return false;
+      }
+
+      if (!this.parentStepper) {
+        return false;
+      }
+
+      var previousStep = this.parentStepper.getPreviousStep(this.stepId);
+
+      if (previousStep !== undefined && !previousStep.editable) {
+        return false;
+      }
+
+      return true;
+    },
+    continueText: function continueText() {
+      if (!this.parentStepper) {
+        return this.mdButtonContinue;
+      }
+
+      if (this.index + 1 === this.parentStepper.getStepsCount() && this.mdButtonContinue === 'CONTINUE') {
+        return 'FINISH';
+      }
+
+      return this.mdButtonContinue;
+    },
+    isCurrentStep: function isCurrentStep() {
+      return this.index === this.parentStepper.activeStepNumber;
+    },
     styles: function styles() {
+      if (this.vertical) {
+        return {};
+      }
+
       return {
         width: this.width,
         left: this.left
@@ -473,60 +589,154 @@ exports.default = {
     }
   },
   methods: {
-    getTabData: function getTabData() {
+    getStepData: function getStepData() {
       return {
-        id: this.tabId,
+        id: this.stepId,
         label: this.mdLabel,
+        message: this.mdMessage,
         icon: this.mdIcon,
-        options: this.mdOptions,
         active: this.mdActive,
+        continue: this.mdContinue,
+        editable: this.mdEditable,
         disabled: this.mdDisabled,
-        tooltip: this.mdTooltip,
+        toolTip: this.mdToolTip,
         tooltipDelay: this.mdTooltipDelay,
         tooltipDirection: this.mdTooltipDirection,
         ref: this
       };
     },
-    updateTabData: function updateTabData() {
-      this.parentTabs.updateTab(this.getTabData());
+    moveNextStep: function moveNextStep() {
+      this.parentStepper.moveNextStep();
+    },
+    movePreviousStep: function movePreviousStep() {
+      this.parentStepper.movePreviousStep();
+    },
+    setActiveStep: function setActiveStep() {
+      this.parentStepper.setActiveStep(this.getStepData());
+    },
+    updateStepData: function updateStepData() {
+      this.parentStepper.updateStep(this.getStepData());
     }
   },
   mounted: function mounted() {
-    var tabData = this.getTabData();
+    var stepData = this.getStepData();
 
-    this.parentTabs = (0, _getClosestVueParent2.default)(this.$parent, 'md-tabs');
+    this.parentStepper = (0, _getClosestVueParent2.default)(this.$parent, 'md-stepper');
 
-    if (!this.parentTabs) {
-      throw new Error('You must wrap the md-tab in a md-tabs');
+    if (!this.parentStepper) {
+      throw new Error('You must wrap the md-step in a md-stepper');
     }
 
     this.mounted = true;
-    this.parentTabs.updateTab(tabData);
+    this.parentStepper.updateStep(stepData);
 
     if (this.mdActive) {
-      this.parentTabs.setActiveTab(tabData);
+      this.parentStepper.setActiveStep(stepData);
     }
+
+    this.vertical = this.parentStepper.mdVertical;
+
+    this.index = this.parentStepper.getStepIndex(this.stepId);
   },
   beforeDestroy: function beforeDestroy() {
-    this.parentTabs.unregisterTab(this.getTabData());
+    this.parentStepper.unregisterStep(this.getStepData());
   }
 };
 module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 19:
+/***/ 177:
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(22)('keys')
-  , uid    = __webpack_require__(20);
-module.exports = function(key){
-  return shared[key] || (shared[key] = uid(key));
-};
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _getClosestVueParent = __webpack_require__(8);
+
+var _getClosestVueParent2 = _interopRequireDefault(_getClosestVueParent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  props: {
+    step: Object,
+    mdAlternateLabels: Boolean
+  },
+  data: function data() {
+    return {
+      index: Number,
+      parentStepper: {}
+    };
+  },
+
+  computed: {
+    isCompleted: function isCompleted() {
+      return this.index < this.parentStepper.activeStepNumber;
+    },
+    getHeaderClasses: function getHeaderClasses() {
+      return {
+        'md-active': this.parentStepper.activeStep === this.step.id,
+        'md-alternate-labels': this.mdAlternateLabels,
+        'md-disabled': this.step.disabled,
+        'md-has-sub-message': this.step.message,
+        'md-primary': this.isCompleted
+      };
+    },
+    icon: function icon() {
+      if (!this.step.disabled && this.step.editable && this.isCompleted) {
+        return 'mode_edit';
+      }
+
+      if (!this.step.disabled && this.isCompleted) {
+        return 'check';
+      }
+
+      return this.step.icon;
+    },
+    stepNumber: function stepNumber() {
+      return this.index + 1;
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    this.$nextTick((function () {
+      _this.parentStepper = (0, _getClosestVueParent2.default)(_this.$parent, 'md-stepper');
+
+      if (!_this.parentStepper) {
+        _this.$destroy();
+
+        throw new Error('You should wrap the md-step-header in a md-stepper');
+      }
+
+      _this.index = _this.parentStepper.getStepIndex(_this.step.id);
+    }));
+  }
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 190:
+/***/ 178:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -582,171 +792,167 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 exports.default = {
-  name: 'md-tabs',
+  name: 'md-stepper',
   props: {
-    mdFixed: Boolean,
-    mdCentered: Boolean,
-    mdRight: Boolean,
-    mdNavigation: {
+    mdAlternateLabels: {
       type: Boolean,
-      default: true
-    },
-    mdDynamicHeight: {
-      type: Boolean,
-      default: true
+      default: false
     },
     mdElevation: {
       type: [String, Number],
-      default: 0
+      default: 1
+    },
+    mdVertical: {
+      type: Boolean,
+      default: false
     }
   },
   mixins: [_mixin2.default],
   data: function data() {
     return {
-      tabList: {},
-      activeTab: null,
-      activeTabNumber: 0,
-      hasIcons: false,
-      hasLabel: false,
-      hasNavigationScroll: false,
-      isNavigationOnStart: true,
-      isNavigationOnEnd: false,
-      transitionControl: null,
-      transitionOff: false,
+      stepList: {},
+      activeStep: null,
+      activeStepNumber: 0,
       contentHeight: '0px',
       contentWidth: '0px'
     };
   },
   computed: {
-    tabClasses: function tabClasses() {
-      return {
-        'md-dynamic-height': this.mdDynamicHeight,
-        'md-transition-off': this.transitionOff
-      };
-    },
     navigationClasses: function navigationClasses() {
       return {
-        'md-has-icon': this.hasIcons,
-        'md-has-label': this.hasLabel,
-        'md-fixed': this.mdFixed,
-        'md-right': !this.mdCentered && this.mdRight,
-        'md-centered': this.mdCentered || this.mdFixed,
-        'md-has-navigation-scroll': this.hasNavigationScroll
+        'md-alternate-labels': this.mdAlternateLabels
       };
     },
-    indicatorClasses: function indicatorClasses() {
-      var toLeft = this.lastIndicatorNumber > this.activeTabNumber;
-
-      this.lastIndicatorNumber = this.activeTabNumber;
-
+    stepsClasses: function stepsClasses() {
       return {
-        'md-transition-off': this.transitionOff,
-        'md-to-right': !toLeft,
-        'md-to-left': toLeft
-      };
-    },
-    navigationLeftButtonClasses: function navigationLeftButtonClasses() {
-      return {
-        'md-disabled': this.isNavigationOnStart
-      };
-    },
-    navigationRightButtonClasses: function navigationRightButtonClasses() {
-      return {
-        'md-disabled': this.isNavigationOnEnd
+        'md-steps-vertical': this.mdVertical
       };
     }
   },
   methods: {
-    getHeaderClass: function getHeaderClass(header) {
-      return {
-        'md-active': this.activeTab === header.id,
-        'md-disabled': header.disabled
-      };
-    },
-    registerTab: function registerTab(tabData) {
-      this.$set(this.tabList, tabData.id, tabData);
-    },
-    unregisterTab: function unregisterTab(tabData) {
-      this.$delete(this.tabList, tabData.id);
-    },
-    updateTab: function updateTab(tabData) {
-      this.registerTab(tabData);
+    getNextStep: function getNextStep(id) {
+      var currentIndex = this.getStepIndex(id);
 
-      if (tabData.active) {
-        if (!tabData.disabled) {
-          this.setActiveTab(tabData);
-        } else if ((0, _keys2.default)(this.tabList).length) {
-          var tabsIds = (0, _keys2.default)(this.tabList);
-          var targetIndex = tabsIds.indexOf(tabData.id) + 1;
-          var target = tabsIds[targetIndex];
+      if (currentIndex === this.stepList.length) {
+        return undefined;
+      }
+
+      var nextStepId = (0, _keys2.default)(this.stepList)[currentIndex + 1];
+      var nextStep = this.stepList[nextStepId];
+
+      return nextStep;
+    },
+    getPreviousStep: function getPreviousStep(id) {
+      var currentIndex = this.getStepIndex(id);
+
+      if (currentIndex === 0) {
+        return undefined;
+      }
+
+      var previousStepId = (0, _keys2.default)(this.stepList)[currentIndex - 1];
+      var previousStep = this.stepList[previousStepId];
+
+      return previousStep;
+    },
+    getStepsCount: function getStepsCount() {
+      var idList = (0, _keys2.default)(this.stepList);
+
+      return idList.length;
+    },
+    getStepIndex: function getStepIndex(id) {
+      var idList = (0, _keys2.default)(this.stepList);
+
+      return idList.indexOf(id);
+    },
+    registerStep: function registerStep(stepData) {
+      this.$set(this.stepList, stepData.id, stepData);
+    },
+    moveNextStep: function moveNextStep() {
+      if (this.activeStepNumber < this.getStepsCount() - 1) {
+        var nextStep = this.getNextStep(this.activeStep);
+
+        this.setActiveStep(nextStep);
+      } else {
+        this.$emit('completed');
+      }
+    },
+    movePreviousStep: function movePreviousStep() {
+      if (this.activeStepNumber > 0 && this.activeStepNumber < this.getStepsCount()) {
+        var prevStep = this.getPreviousStep(this.activeStep);
+
+        this.setActiveStep(prevStep);
+      }
+    },
+    setActiveStep: function setActiveStep(stepData) {
+      if (this.activeStepNumber > this.getStepIndex(stepData.id) && !stepData.editable) {
+        return;
+      }
+
+      this.activeStep = stepData.id;
+      this.activeStepNumber = this.getStepIndex(this.activeStep);
+      this.calculatePosition();
+      this.$emit('change', this.activeStepNumber);
+    },
+    unregisterStep: function unregisterStep(stepData) {
+      this.$delete(this.stepList, stepData.id);
+    },
+    updateStep: function updateStep(stepData) {
+      this.registerStep(stepData);
+
+      if (stepData.active) {
+        if (!stepData.disabled) {
+          this.setActiveStep(stepData);
+        } else if ((0, _keys2.default)(this.stepList).length) {
+          var stepIds = (0, _keys2.default)(this.stepList);
+          var targetIndex = stepIds.indexOf(stepData.id) + 1;
+          var target = stepIds[targetIndex];
 
           if (target) {
-            this.setActiveTab(this.tabList[target]);
+            this.setActiveStep(this.stepList[target]);
           } else {
-            this.setActiveTab(this.tabList[0]);
+            this.setActiveStep(this.stepList[0]);
           }
         }
       }
     },
     observeElementChanges: function observeElementChanges() {
       this.parentObserver = new MutationObserver((0, _throttle2.default)(this.calculateOnWatch, 50));
-      this.parentObserver.observe(this.$refs.tabContent, {
+      this.parentObserver.observe(this.$refs.stepContent, {
         childList: true,
         attributes: true,
         subtree: true
       });
     },
-    getTabIndex: function getTabIndex(id) {
-      var idList = (0, _keys2.default)(this.tabList);
+    calculateStepsWidthAndPosition: function calculateStepsWidthAndPosition() {
+      if (!this.mdVertical) {
+        var width = this.$el.offsetWidth;
+        var index = 0;
 
-      return idList.indexOf(id);
-    },
-    calculateIndicatorPos: function calculateIndicatorPos() {
-      if (this.$refs.tabHeader && this.$refs.tabHeader[this.activeTabNumber]) {
-        var tabsWidth = this.$el.offsetWidth;
-        var activeTab = this.$refs.tabHeader[this.activeTabNumber];
-        var left = activeTab.offsetLeft - this.$refs.tabsContainer.scrollLeft;
-        var right = tabsWidth - left - activeTab.offsetWidth;
+        this.contentWidth = width * this.activeStepNumber + 'px';
 
-        this.$refs.indicator.style.left = left + 'px';
-        this.$refs.indicator.style.right = right + 'px';
-      }
-    },
-    calculateTabsWidthAndPosition: function calculateTabsWidthAndPosition() {
-      var width = this.$el.offsetWidth;
-      var index = 0;
+        for (var stepId in this.stepList) {
+          var step = this.stepList[stepId];
 
-      this.contentWidth = width * this.activeTabNumber + 'px';
-
-      for (var tabId in this.tabList) {
-        var tab = this.tabList[tabId];
-
-        tab.ref.width = width + 'px';
-        tab.ref.left = width * index + 'px';
-        index++;
+          step.ref.width = width + 'px';
+          step.ref.left = width * index + 'px';
+          index++;
+        }
+      } else {
+        this.contentWidth = 'initial';
       }
     },
     calculateContentHeight: function calculateContentHeight() {
       var _this = this;
 
       this.$nextTick((function () {
-        if ((0, _keys2.default)(_this.tabList).length) {
-          var height = _this.tabList[_this.activeTab].ref.$el.offsetHeight;
+        if (!_this.mdVertical && (0, _keys2.default)(_this.stepList).length) {
+          var height = _this.stepList[_this.activeStep].ref.$el.offsetHeight;
 
           _this.contentHeight = height + 'px';
+        } else {
+          _this.contentHeight = 'initial';
         }
       }));
     },
@@ -754,10 +960,8 @@ exports.default = {
       var _this2 = this;
 
       window.requestAnimationFrame((function () {
-        _this2.calculateIndicatorPos();
-        _this2.calculateTabsWidthAndPosition();
+        _this2.calculateStepsWidthAndPosition();
         _this2.calculateContentHeight();
-        _this2.checkNavigationScroll();
       }));
     },
     debounceTransition: function debounceTransition() {
@@ -776,70 +980,19 @@ exports.default = {
     calculateOnResize: function calculateOnResize() {
       this.transitionOff = true;
       this.calculateOnWatch();
-    },
-    calculateScrollPos: function calculateScrollPos() {
-      var _$refs$tabsContainer = this.$refs.tabsContainer,
-          scrollLeft = _$refs$tabsContainer.scrollLeft,
-          scrollWidth = _$refs$tabsContainer.scrollWidth,
-          clientWidth = _$refs$tabsContainer.clientWidth;
-
-
-      this.isNavigationOnStart = scrollLeft < 32;
-      this.isNavigationOnEnd = scrollWidth - scrollLeft - 32 < clientWidth;
-    },
-    handleNavigationScroll: function handleNavigationScroll() {
-      var _this4 = this;
-
-      window.requestAnimationFrame((function () {
-        _this4.calculateIndicatorPos();
-        _this4.calculateScrollPos();
-      }));
-    },
-    checkNavigationScroll: function checkNavigationScroll() {
-      var _$refs$tabsContainer2 = this.$refs.tabsContainer,
-          scrollWidth = _$refs$tabsContainer2.scrollWidth,
-          clientWidth = _$refs$tabsContainer2.clientWidth;
-
-
-      this.hasNavigationScroll = scrollWidth > clientWidth;
-    },
-    setActiveTab: function setActiveTab(tabData) {
-      this.hasIcons = !!tabData.icon;
-      this.hasLabel = !!tabData.label;
-      this.activeTab = tabData.id;
-      this.activeTabNumber = this.getTabIndex(this.activeTab);
-      this.calculatePosition();
-      this.$emit('change', this.activeTabNumber);
-    },
-    navigationScrollLeft: function navigationScrollLeft() {
-      var _$refs$tabsContainer3 = this.$refs.tabsContainer,
-          scrollLeft = _$refs$tabsContainer3.scrollLeft,
-          clientWidth = _$refs$tabsContainer3.clientWidth;
-
-
-      this.$refs.tabsContainer.scrollLeft = Math.max(0, scrollLeft - clientWidth);
-    },
-    navigationScrollRight: function navigationScrollRight() {
-      var _$refs$tabsContainer4 = this.$refs.tabsContainer,
-          scrollLeft = _$refs$tabsContainer4.scrollLeft,
-          clientWidth = _$refs$tabsContainer4.clientWidth,
-          scrollWidth = _$refs$tabsContainer4.scrollWidth;
-
-
-      this.$refs.tabsContainer.scrollLeft = Math.min(scrollWidth, scrollLeft + clientWidth);
     }
   },
   mounted: function mounted() {
-    var _this5 = this;
+    var _this4 = this;
 
     this.$nextTick((function () {
-      _this5.observeElementChanges();
-      window.addEventListener('resize', _this5.calculateOnResize);
+      _this4.observeElementChanges();
+      window.addEventListener('resize', _this4.calculateOnResize);
 
-      if ((0, _keys2.default)(_this5.tabList).length && !_this5.activeTab) {
-        var firstTab = (0, _keys2.default)(_this5.tabList)[0];
+      if ((0, _keys2.default)(_this4.stepList).length && !_this4.activeStep) {
+        var firstStep = (0, _keys2.default)(_this4.stepList)[0];
 
-        _this5.setActiveTab(_this5.tabList[firstTab]);
+        _this4.setActiveStep(_this4.stepList[firstStep]);
       }
     }));
   },
@@ -852,6 +1005,30 @@ exports.default = {
   }
 };
 module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 18:
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys       = __webpack_require__(31)
+  , enumBugKeys = __webpack_require__(21);
+
+module.exports = Object.keys || function keys(O){
+  return $keys(O, enumBugKeys);
+};
+
+/***/ }),
+
+/***/ 19:
+/***/ (function(module, exports, __webpack_require__) {
+
+var shared = __webpack_require__(22)('keys')
+  , uid    = __webpack_require__(20);
+module.exports = function(key){
+  return shared[key] || (shared[key] = uid(key));
+};
 
 /***/ }),
 
@@ -909,7 +1086,7 @@ module.exports = function(it){
 
 /***/ }),
 
-/***/ 236:
+/***/ 237:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
@@ -995,10 +1172,10 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
 
 /***/ }),
 
-/***/ 286:
+/***/ 282:
 /***/ (function(module, exports) {
 
-module.exports = ".THEME_NAME.md-tabs > .md-tabs-navigation {\n  background-color: PRIMARY-COLOR; }\n  .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header {\n    color: PRIMARY-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header:focus {\n      color: PRIMARY-CONTRAST; }\n    .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: PRIMARY-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-indicator {\n    background-color: ACCENT-COLOR; }\n  .THEME_NAME.md-tabs > .md-tabs-navigation .md-tab-header-navigation-button {\n    color: PRIMARY-CONTRAST-0.54;\n    background-color: PRIMARY-COLOR; }\n\n.THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation {\n  background-color: transparent;\n  border-bottom: 1px solid BACKGROUND-CONTRAST-0.12; }\n  .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header {\n    color: BACKGROUND-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header:focus {\n      color: PRIMARY-COLOR; }\n    .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: BACKGROUND-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs.md-transparent > .md-tabs-navigation .md-tab-indicator {\n    background-color: PRIMARY-COLOR; }\n\n.THEME_NAME.md-tabs.md-accent > .md-tabs-navigation {\n  background-color: ACCENT-COLOR; }\n  .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header {\n    color: ACCENT-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header:focus {\n      color: ACCENT-CONTRAST; }\n    .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: ACCENT-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs.md-accent > .md-tabs-navigation .md-tab-indicator {\n    background-color: BACKGROUND-COLOR; }\n\n.THEME_NAME.md-tabs.md-warn > .md-tabs-navigation {\n  background-color: WARN-COLOR; }\n  .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header {\n    color: WARN-CONTRAST-0.54; }\n    .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header.md-active, .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header:focus {\n      color: WARN-CONTRAST; }\n    .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-header.md-disabled {\n      color: WARN-CONTRAST-0.26; }\n  .THEME_NAME.md-tabs.md-warn > .md-tabs-navigation .md-tab-indicator {\n    background-color: BACKGROUND-COLOR; }\n"
+module.exports = ".THEME_NAME.md-stepper .md-step-header .md-step-icon,\n.THEME_NAME.md-stepper .md-step-header .md-step-number {\n  color: BACKGROUND-CONTRAST;\n  background-color: #bdbdbd; }\n\n.THEME_NAME.md-stepper .md-step-header.md-primary .md-step-icon,\n.THEME_NAME.md-stepper .md-step-header.md-primary .md-step-number, .THEME_NAME.md-stepper .md-step-header.md-active .md-step-icon,\n.THEME_NAME.md-stepper .md-step-header.md-active .md-step-number {\n  color: PRIMARY-CONTRAST;\n  background-color: PRIMARY-COLOR; }\n\n.THEME_NAME.md-stepper .md-step-header.md-accent .md-step-icon,\n.THEME_NAME.md-stepper .md-step-header.md-accent .md-step-number {\n  color: ACCENT-CONTRAST;\n  background-color: ACCENT-COLOR; }\n\n.THEME_NAME.md-stepper .md-step-header.md-warn .md-step-icon,\n.THEME_NAME.md-stepper .md-step-header.md-warn .md-step-number {\n  color: WARN-CONTRAST;\n  background-color: WARN-COLOR; }\n\n.THEME_NAME.md-stepper .md-step-header.md-disabled {\n  color: #bdbdbd; }\n  .THEME_NAME.md-stepper .md-step-header.md-disabled .md-step-icon,\n  .THEME_NAME.md-stepper .md-step-header.md-disabled .md-step-number {\n    color: white;\n    background-color: #bdbdbd; }\n"
 
 /***/ }),
 
@@ -1106,29 +1283,22 @@ module.exports = function(index, length){
 
 /***/ }),
 
-/***/ 35:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(38), __esModule: true };
-
-/***/ }),
-
-/***/ 357:
+/***/ 344:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(189),
+  __webpack_require__(176),
   /* template */
-  __webpack_require__(364),
+  __webpack_require__(408),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdTabs/mdTab.vue"
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdStepper/mdStep.vue"
 if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] mdTab.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] mdStep.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -1137,9 +1307,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-01de8cdf", Component.options)
+    hotAPI.createRecord("data-v-5a2a8733", Component.options)
   } else {
-    hotAPI.reload("data-v-01de8cdf", Component.options)
+    hotAPI.reload("data-v-5a2a8733", Component.options)
   }
 })()}
 
@@ -1148,26 +1318,61 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 358:
+/***/ 345:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(177),
+  /* template */
+  __webpack_require__(399),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdStepper/mdStepHeader.vue"
+if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] mdStepHeader.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-462bd1c0", Component.options)
+  } else {
+    hotAPI.reload("data-v-462bd1c0", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ 346:
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(236)
+__webpack_require__(237)
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(190),
+  __webpack_require__(178),
   /* template */
-  __webpack_require__(394),
+  __webpack_require__(395),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdTabs/mdTabs.vue"
+Component.options.__file = "/Users/charles/repository/references/vue-material/src/components/mdStepper/mdStepper.vue"
 if (Component.esModule && Object.keys(Component.esModule).some((function (key) {return key !== "default" && key !== "__esModule"}))) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] mdTabs.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] mdStepper.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -1176,14 +1381,21 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3d9eb024", Component.options)
+    hotAPI.createRecord("data-v-4122aeba", Component.options)
   } else {
-    hotAPI.reload("data-v-3d9eb024", Component.options)
+    hotAPI.reload("data-v-4122aeba", Component.options)
   }
 })()}
 
 module.exports = Component.exports
 
+
+/***/ }),
+
+/***/ 35:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(38), __esModule: true };
 
 /***/ }),
 
@@ -1202,28 +1414,6 @@ var uniqueId = function uniqueId() {
 
 exports.default = uniqueId;
 module.exports = exports["default"];
-
-/***/ }),
-
-/***/ 364:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "md-tab",
-    style: (_vm.styles),
-    attrs: {
-      "id": _vm.tabId
-    }
-  }, [_vm._t("default")], 2)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-01de8cdf", module.exports)
-  }
-}
 
 /***/ }),
 
@@ -1251,91 +1441,98 @@ module.exports = function(KEY, exec){
 
 /***/ }),
 
-/***/ 394:
+/***/ 395:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "md-tabs",
-    class: [_vm.themeClass, _vm.tabClasses]
-  }, [_c('md-whiteframe', {
-    ref: "tabNavigation",
-    staticClass: "md-tabs-navigation",
+    staticClass: "md-stepper",
+    class: [_vm.themeClass, _vm.stepsClasses]
+  }, [(!_vm.mdVertical) ? _c('md-whiteframe', {
+    ref: "stepNavigation",
+    staticClass: "md-steps-navigation",
     class: _vm.navigationClasses,
     attrs: {
       "md-tag": "nav",
       "md-elevation": _vm.mdElevation
     }
-  }, [_c('div', {
-    ref: "tabsContainer",
-    staticClass: "md-tabs-navigation-container",
-    on: {
-      "scroll": _vm.handleNavigationScroll
+  }, [_c('md-step-header-container', {
+    ref: "stepHeader",
+    attrs: {
+      "md-vertical": _vm.mdVertical
     }
-  }, [_c('div', {
-    staticClass: "md-tabs-navigation-scroll-container"
-  }, [_vm._l((_vm.tabList), (function(header) {
-    return _c('button', {
-      key: header.id,
-      ref: "tabHeader",
-      refInFor: true,
-      staticClass: "md-tab-header",
-      class: _vm.getHeaderClass(header),
+  }, _vm._l((_vm.stepList), (function(step, index) {
+    return _c('md-step-header', {
+      key: step.id,
       attrs: {
-        "type": "button",
-        "disabled": header.disabled
+        "step": step,
+        "md-alternate-labels": _vm.mdAlternateLabels
       },
-      on: {
+      nativeOn: {
         "click": function($event) {
-          _vm.setActiveTab(header)
+          _vm.setActiveStep(step)
         }
       }
-    }, [_c('md-ink-ripple', {
-      attrs: {
-        "md-disabled": header.disabled
-      }
-    }), _vm._v(" "), _c('div', {
-      staticClass: "md-tab-header-container"
-    }, [(header.icon) ? _c('md-icon', [_vm._v(_vm._s(header.icon))]) : _vm._e(), _vm._v(" "), (header.label) ? _c('span', [_vm._v(_vm._s(header.label))]) : _vm._e(), _vm._v(" "), (header.tooltip) ? _c('md-tooltip', {
-      attrs: {
-        "md-direction": header.tooltipDirection,
-        "md-delay": header.tooltipDelay
-      }
-    }, [_vm._v(_vm._s(header.tooltip))]) : _vm._e()], 1)], 1)
-  })), _vm._v(" "), _c('span', {
-    ref: "indicator",
-    staticClass: "md-tab-indicator",
-    class: _vm.indicatorClasses
-  })], 2)]), _vm._v(" "), (_vm.mdNavigation && _vm.hasNavigationScroll) ? _c('button', {
-    staticClass: "md-tab-header-navigation-button md-left",
-    class: _vm.navigationLeftButtonClasses,
-    on: {
-      "click": _vm.navigationScrollLeft
+    })
+  })))], 1) : _vm._e(), _vm._v(" "), _c('md-whiteframe', {
+    attrs: {
+      "md-elevation": _vm.mdElevation
     }
-  }, [_c('md-icon', [_vm._v("keyboard_arrow_left")])], 1) : _vm._e(), _vm._v(" "), (_vm.mdNavigation && _vm.hasNavigationScroll) ? _c('button', {
-    staticClass: "md-tab-header-navigation-button md-right",
-    class: _vm.navigationRightButtonClasses,
-    on: {
-      "click": _vm.navigationScrollRight
-    }
-  }, [_c('md-icon', [_vm._v("keyboard_arrow_right")])], 1) : _vm._e()]), _vm._v(" "), _c('div', {
-    ref: "tabContent",
-    staticClass: "md-tabs-content",
+  }, [(!_vm.mdVertical) ? _c('div', {
+    ref: "stepContent",
+    staticClass: "md-steps-container",
     style: ({
       height: _vm.contentHeight
     })
   }, [_c('div', {
-    staticClass: "md-tabs-wrapper",
+    staticClass: "md-steps-wrapper",
     style: ({
       transform: ("translate3D(-" + _vm.contentWidth + ", 0, 0)")
     })
-  }, [_vm._t("default")], 2)])], 1)
+  }, [_vm._t("default")], 2)]) : _vm._e(), _vm._v(" "), (_vm.mdVertical) ? _c('div', {
+    ref: "stepContent",
+    staticClass: "md-steps-vertical-container"
+  }, [_vm._t("default")], 2) : _vm._e()])], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3d9eb024", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-4122aeba", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ 399:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "md-step-header",
+    class: _vm.getHeaderClasses
+  }, [_c('div', {
+    staticClass: "md-step-icons"
+  }, [(_vm.icon) ? _c('md-icon', {
+    staticClass: "md-step-icon"
+  }, [_vm._v(_vm._s(_vm.icon))]) : _vm._e(), _vm._v(" "), (!_vm.icon) ? _c('div', {
+    staticClass: "md-step-number"
+  }, [_c('span', [_vm._v(_vm._s(_vm.stepNumber))])]) : _vm._e()], 1), _vm._v(" "), _c('div', {
+    staticClass: "md-step-titles"
+  }, [_c('div', {
+    staticClass: "md-step-title"
+  }, [_vm._v(_vm._s(_vm.step.label))]), _vm._v(" "), (_vm.step.message) ? _c('small', [_vm._v(_vm._s(_vm.step.message))]) : _vm._e()]), _vm._v(" "), (_vm.step.toolTip) ? _c('md-tooltip', {
+    attrs: {
+      "md-direction": _vm.step.tooltipDirection,
+      "md-delay": _vm.step.tooltipDelay
+    }
+  }, [_vm._v(_vm._s(_vm.step.toolTip))]) : _vm._e()], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-462bd1c0", module.exports)
   }
 }
 
@@ -1346,6 +1543,56 @@ if (false) {
 
 var core = module.exports = {version: '2.4.0'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+
+/***/ }),
+
+/***/ 408:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "md-step",
+    style: (_vm.styles),
+    attrs: {
+      "id": _vm.stepId
+    }
+  }, [(_vm.vertical) ? _c('md-step-header', {
+    attrs: {
+      "step": _vm.getStepData()
+    },
+    nativeOn: {
+      "click": function($event) {
+        _vm.setActiveStep()
+      }
+    }
+  }) : _vm._e(), _vm._v(" "), (!_vm.vertical || (_vm.vertical && _vm.isCurrentStep)) ? _c('div', {
+    staticClass: "md-step-content"
+  }, [_vm._t("default"), _vm._v(" "), (!_vm.vertical || (_vm.vertical && _vm.isCurrentStep)) ? _c('div', {
+    staticClass: "md-step-actions"
+  }, [_c('md-button', {
+    staticClass: "md-raised md-primary",
+    attrs: {
+      "disabled": !_vm.mdContinue
+    },
+    on: {
+      "click": _vm.moveNextStep
+    }
+  }, [_vm._v(_vm._s(_vm.continueText))]), _vm._v(" "), _c('md-button', {
+    attrs: {
+      "disabled": !_vm.canGoBack
+    },
+    on: {
+      "click": _vm.movePreviousStep
+    }
+  }, [_vm._v(_vm._s(_vm.mdButtonBack))])], 1) : _vm._e()], 2) : _vm._e()], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-5a2a8733", module.exports)
+  }
+}
 
 /***/ }),
 
@@ -1393,10 +1640,10 @@ module.exports = exports["default"];
 
 /***/ }),
 
-/***/ 467:
+/***/ 463:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(105);
+module.exports = __webpack_require__(101);
 
 
 /***/ }),
